@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import ProductCard from './components/ProductCard.vue'
+import { useCart } from './store'
+
+const { addToCart } = useCart()
 
 // Product type
 interface Product {
@@ -48,11 +51,12 @@ const filteredProducts = computed(() => {
     <!-- Product Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <ProductCard 
-        v-for="p in filteredProducts" 
-        :key="p.id" 
-        :product="p" 
-        @select="selectedProduct = $event"
-      />
+  v-for="p in filteredProducts" 
+  :key="p.id" 
+  :product="p" 
+  @select="selectedProduct = $event"
+  @add-to-cart="addToCart"
+/>
     </div>
 
     <!-- Detail View -->
