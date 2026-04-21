@@ -1,7 +1,24 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import { ref, onMounted } from 'vue'
+
+// create a variable to store products
+const products = ref([])
+
+// run this when app loads
+onMounted(async () => {
+  const res = await fetch('https://dummyjson.com/products')
+  const data = await res.json()
+  products.value = data.products
+})
 </script>
 
 <template>
-  <HelloWorld />
+  <div>
+    <h1>My Products</h1>
+
+    <div v-for="p in products" :key="p.id">
+      <h3>{{ p.title }}</h3>
+      <p>Price: {{ p.price }}</p>
+    </div>
+  </div>
 </template>
