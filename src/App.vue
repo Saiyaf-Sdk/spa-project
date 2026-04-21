@@ -2,6 +2,8 @@
 import { ref, onMounted, computed } from 'vue'
 import ProductCard from './components/ProductCard.vue'
 import { useCart } from './store'
+const dark = ref(false)
+
 
 const { addToCart } = useCart()
 
@@ -37,6 +39,16 @@ const filteredProducts = computed(() => {
 </script>
 
 <template>
+  <button 
+  @click="dark = !dark"
+  class="mb-4 px-3 py-1 bg-gray-800 text-white rounded"
+>
+<div :class="dark ? 'bg-black text-white min-h-screen' : 'bg-white text-black min-h-screen'"></div>
+  Toggle Dark Mode
+</button>
+  <div class="mb-4">
+  🛒 Cart Items: {{ cart.length }}
+</div>
   <div class="p-6 max-w-5xl mx-auto">
     
     <h1 class="text-3xl font-bold mb-4">🛍️ My Products</h1>
