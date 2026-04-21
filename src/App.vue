@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ProductCard from './components/ProductCard.vue'
 import { ref, onMounted } from 'vue'
 
 // create a variable to store products
@@ -16,9 +17,10 @@ onMounted(async () => {
   <div>
     <h1>My Products</h1>
 
-    <div v-for="p in products" :key="p.id">
-      <h3>{{ p.title }}</h3>
-      <p>Price: {{ p.price }}</p>
-    </div>
+   <ProductCard 
+  v-for="p in products" 
+  :key="p.id" 
+  :product="p" 
+/>
   </div>
 </template>
