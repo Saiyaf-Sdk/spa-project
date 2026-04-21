@@ -1,10 +1,12 @@
 <script setup lang="ts">
+interface Product {
+  id: number
+  title: string
+  price: number
+}
+
 defineProps<{
-  product: {
-    id: number
-    title: string
-    price: number
-  }
+  product: Product
 }>()
 </script>
 
