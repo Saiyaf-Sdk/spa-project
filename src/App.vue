@@ -1,9 +1,14 @@
 <script setup lang="ts">
+interface Product {
+  id: number
+  title: string
+  price: number
+}
 import ProductCard from './components/ProductCard.vue'
 import { ref, onMounted } from 'vue'
 
 // create a variable to store products
-const products = ref([])
+const products = ref<Product[]>([])
 
 // run this when app loads
 onMounted(async () => {
