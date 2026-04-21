@@ -11,7 +11,10 @@ defineProps<{
 </script>
 
 <template>
-  <div style="border:1px solid gray; padding:10px; margin:10px;">
+  <div 
+  @click="$emit('select', product)" 
+  style="border:1px solid gray; padding:10px; margin:10px; cursor:pointer;"
+>
     <h3>{{ product.title }}</h3>
     <p>Price: {{ product.price }}</p>
   </div>
