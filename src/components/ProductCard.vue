@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const emit = defineEmits(['select'])
 interface Product {
   id: number
   title: string
