@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import { ref, onMounted, computed } from 'vue'
+const search = ref('')
+const filteredProducts = computed(() => {
+  return products.value.filter(p =>
+    p.title.toLowerCase().includes(search.value.toLowerCase())
+  )
+})
 interface Product {
   id: number
   title: string
@@ -21,9 +28,13 @@ onMounted(async () => {
 <template>
   <div>
     <h1>My Products</h1>
+    <input 
+  v-model="search" 
+  placeholder="Search products..." 
+/>
 
    <ProductCard 
-  v-for="p in products" 
+  v-for="p in filteredProducts" 
   :key="p.id" 
   :product="p" 
 />
