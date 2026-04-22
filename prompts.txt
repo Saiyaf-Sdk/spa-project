@@ -1,0 +1,15 @@
+The aim 01: Understand mandatory and bonus grading requirements from the mini-project brief.
+Actual prompt: Extract and summarize the assignment requirements from this PDF, then provide a complete implementation checklist.
+
+The aim 02: Scaffold a Vue 3 + TypeScript + Tailwind SPA architecture with reusable components.
+Actual prompt: Create a full production-style project structure with components, views, stores, and strict interfaces (no any types).
+
+The aim 03: Implement strongly typed API consumption and state management.
+Actual prompt: Generate typed service functions for DummyJSON endpoints, plus Pinia stores for auth and persistent cart state.
+
+The aim 04: Build polished responsive UI and bonus features.
+Actual prompt: Add dynamic routing, login simulation, cart persistence, dark mode toggle, and modern Tailwind styling.
+
+The aim 05: Prepare final deliverables for submission.
+Actual prompt: Create README, prompts log, and a report template that explains architecture and implemented features.
+
