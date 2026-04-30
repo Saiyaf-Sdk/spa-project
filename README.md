@@ -4,13 +4,24 @@ This template should help get you started developing with Vue 3 and TypeScript i
 
 Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
 
-# Instructions to run
---------------------------------------------------------
+## Stack
 
- 1. Download the zip file
- 2. Unzip the file
- 3. run cmd 
- 4. Loacte the directory file
- 5. run the command "npm install"
- 6. again enter the command "npm run dev"
- 7. copy the link "host" and run in to via a browser
+- Vue 3 (Composition API)
+- TypeScript
+- Vite
+- Tailwind CSS
+- Vue Router
+
+## Run Locally
+
+```bash
+npm install
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+npm run preview
+```
