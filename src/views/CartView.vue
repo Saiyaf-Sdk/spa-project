@@ -1,164 +1,228 @@
 <template>
   <section>
-    <h1 class="font-display text-3xl font-extrabold text-slate-900 dark:text-slate-100">Your Cart</h1>
-    <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
-      Manage quantities and complete a simulated checkout.
-    </p>
+    <button
+      class="mb-5 rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:border-brand-400 hover:text-brand-700 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-500 dark:hover:text-brand-200"
+      type="button"
+      @click="goBack"
+    >
+      Back
+    </button>
 
-    <div v-if="cartStore.items.length === 0" class="mt-6 rounded-3xl glass-card p-8 text-center">
-      <p class="font-display text-2xl font-semibold">Your cart is empty.</p>
-      <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
-        Add products from the catalog to continue.
-      </p>
-      <RouterLink
-        class="mt-5 inline-flex rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700"
-        to="/"
-      >
-        Go to Catalog
-      </RouterLink>
+    <div
+      v-if="loading"
+      class="grid gap-5 rounded-3xl glass-card p-6 md:grid-cols-2"
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <div class="h-80 animate-pulse rounded-2xl bg-slate-200 dark:bg-slate-800" />
+      <div class="space-y-3">
+        <div class="h-8 w-3/4 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+        <div class="h-4 w-full animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+        <div class="h-4 w-5/6 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+      </div>
     </div>
 
-    <div v-else class="mt-6 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
-      <div class="space-y-3">
-        <article
-          v-for="line in cartStore.items"
-          :key="line.productId"
-          class="grid gap-3 rounded-2xl border border-slate-200 bg-white/80 p-4 md:grid-cols-[90px_1fr_auto] md:items-center dark:border-slate-700 dark:bg-slate-900/70"
-        >
-          <img :alt="line.title" :src="line.thumbnail" class="h-20 w-20 rounded-xl object-cover" />
+    <div
+      v-else-if="errorMessage"
+      class="rounded-2xl border border-ember-500/40 bg-ember-500/10 p-5 text-sm text-ember-700 dark:text-amber-200"
+    >
+      <p class="font-semibold">Could not load product details.</p>
+      <p class="mt-1">{{ errorMessage }}</p>
+    </div>
 
-          <div>
-            <RouterLink
-              :to="`/product/${line.productId}`"
-              class="font-semibold text-slate-900 hover:text-brand-700 dark:text-slate-100 dark:hover:text-brand-300"
-            >
-              {{ line.title }}
-            </RouterLink>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              {{ formatCategoryLabel(line.category) }}
-            </p>
-            <p class="mt-1 font-semibold text-slate-700 dark:text-slate-200">
-              {{ formatCurrency(line.price) }} each
-            </p>
-          </div>
-
-          <div class="flex items-center gap-2">
+    <article v-else-if="product" class="rounded-3xl glass-card p-5 md:p-7">
+      <div class="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
+        <div>
+          <img
+            :alt="product.title"
+            :src="activeImage"
+            class="h-[340px] w-full rounded-2xl object-cover md:h-[420px]"
+          />
+          <div class="mt-3 grid grid-cols-4 gap-2">
             <button
-              class="rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm font-semibold dark:border-slate-600"
+              v-for="image in imageChoices"
+              :key="image"
+              :class="[
+                'overflow-hidden rounded-xl border transition',
+                image === activeImage
+                  ? 'border-brand-500 ring-2 ring-brand-200 dark:ring-brand-800'
+                  : 'border-slate-200 dark:border-slate-700'
+              ]"
               type="button"
-              @click="cartStore.decrease(line.productId)"
+              @click="activeImage = image"
             >
-              -
-            </button>
-            <span class="w-8 text-center text-sm font-semibold">{{ line.quantity }}</span>
-            <button
-              class="rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm font-semibold dark:border-slate-600"
-              type="button"
-              @click="cartStore.increase(line.productId)"
-            >
-              +
-            </button>
-            <button
-              class="ml-2 rounded-lg bg-ember-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-ember-600"
-              type="button"
-              @click="cartStore.removeItem(line.productId)"
-            >
-              Remove
+              <img :alt="product.title" :src="image" class="h-16 w-full object-cover md:h-20" />
             </button>
           </div>
-        </article>
+        </div>
+
+        <div>
+          <p
+            class="inline-flex rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-800 dark:bg-brand-900/30 dark:text-brand-100"
+          >
+            {{ formattedCategory }}
+          </p>
+          <h1 class="mt-3 font-display text-3xl font-extrabold text-slate-900 dark:text-slate-100">
+            {{ product.title }}
+          </h1>
+          <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ product.description }}</p>
+
+          <div class="mt-5 grid gap-3 rounded-2xl bg-white/75 p-4 dark:bg-slate-900/70">
+            <div class="flex items-end gap-3">
+              <div>
+                <p class="font-display text-3xl font-bold text-slate-900 dark:text-slate-100">
+                  {{ formatCurrency(finalPrice) }}
+                </p>
+                <p class="text-sm font-medium text-brand-600 dark:text-brand-400">
+                  {{ formatCurrencyLKR(finalPrice) }}
+                </p>
+              </div>
+              <div v-if="product.discountPercentage > 0">
+                <p class="pb-1 text-sm text-slate-500 line-through dark:text-slate-400">
+                  {{ formatCurrency(product.price) }}
+                </p>
+                <p class="text-xs text-slate-400 line-through dark:text-slate-500">
+                  {{ formatCurrencyLKR(product.price) }}
+                </p>
+              </div>
+            </div>
+            <p class="text-sm text-slate-600 dark:text-slate-300">
+              Rated <span class="font-semibold">{{ product.rating.toFixed(1) }}</span> / 5 by users
+            </p>
+            <p class="text-sm text-slate-600 dark:text-slate-300">
+              Stock available:
+              <span class="font-semibold">{{ product.stock }}</span>
+            </p>
+            <button
+              class="mt-2 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700"
+              type="button"
+              @click="addToCart"
+            >
+              Add to Cart
+            </button>
+          </div>
+
+          <dl class="mt-6 grid gap-3 text-sm">
+            <div class="rounded-xl bg-white/70 px-3 py-2 dark:bg-slate-900/65">
+              <dt class="font-semibold">Brand</dt>
+              <dd class="text-slate-600 dark:text-slate-300">{{ product.brand ?? 'N/A' }}</dd>
+            </div>
+            <div class="rounded-xl bg-white/70 px-3 py-2 dark:bg-slate-900/65">
+              <dt class="font-semibold">Warranty</dt>
+              <dd class="text-slate-600 dark:text-slate-300">
+                {{ product.warrantyInformation ?? 'Not specified' }}
+              </dd>
+            </div>
+            <div class="rounded-xl bg-white/70 px-3 py-2 dark:bg-slate-900/65">
+              <dt class="font-semibold">Shipping</dt>
+              <dd class="text-slate-600 dark:text-slate-300">
+                {{ product.shippingInformation ?? 'Standard shipping terms apply' }}
+              </dd>
+            </div>
+          </dl>
+        </div>
       </div>
 
-      <aside class="h-fit rounded-2xl glass-card p-5 soft-ring">
-        <h2 class="font-display text-xl font-bold">Summary</h2>
-        <dl class="mt-4 space-y-2 text-sm">
-          <div class="flex items-center justify-between">
-            <dt class="text-slate-600 dark:text-slate-300">Items</dt>
-            <dd class="font-semibold">{{ cartStore.itemCount }}</dd>
-          </div>
-          <div class="flex items-center justify-between">
-            <dt class="text-slate-600 dark:text-slate-300">Subtotal</dt>
-            <dd class="font-semibold">{{ formatCurrency(cartStore.subtotal) }}</dd>
-          </div>
-          <div class="flex items-center justify-between">
-            <dt class="text-slate-600 dark:text-slate-300">Shipping</dt>
-            <dd class="font-semibold">{{ formatCurrency(shipping) }}</dd>
-          </div>
-          <div class="flex items-center justify-between">
-            <dt class="text-slate-600 dark:text-slate-300">Tax (8%)</dt>
-            <dd class="font-semibold">{{ formatCurrency(tax) }}</dd>
-          </div>
-          <div class="my-2 border-t border-slate-200 dark:border-slate-700" />
-          <div class="flex items-center justify-between text-base">
-            <dt class="font-semibold">Total</dt>
-            <dd class="font-display text-xl font-bold">{{ formatCurrency(total) }}</dd>
-          </div>
-        </dl>
-
-        <p
-          v-if="checkoutMessage"
-          class="mt-4 rounded-xl bg-brand-100 px-3 py-2 text-sm text-brand-800 dark:bg-brand-900/35 dark:text-brand-100"
-        >
-          {{ checkoutMessage }}
-        </p>
-
-        <button
-          class="mt-4 w-full rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700"
-          type="button"
-          @click="handleCheckout"
-        >
-          {{ authStore.isAuthenticated ? 'Simulate Checkout' : 'Log In to Checkout' }}
-        </button>
-
-        <button
-          class="mt-2 w-full rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-ember-500 hover:text-ember-600 dark:border-slate-600 dark:text-slate-200"
-          type="button"
-          @click="cartStore.clear"
-        >
-          Clear Cart
-        </button>
-      </aside>
-    </div>
+      <section v-if="product.reviews && product.reviews.length > 0" class="mt-8">
+        <h2 class="font-display text-2xl font-bold">Customer Reviews</h2>
+        <div class="mt-3 grid gap-3 md:grid-cols-2">
+          <article
+            v-for="review in product.reviews"
+            :key="`${review.reviewerEmail}-${review.date}`"
+            class="rounded-2xl border border-slate-200 bg-white/80 p-4 dark:border-slate-700 dark:bg-slate-900/65"
+          >
+            <p class="font-semibold">{{ review.reviewerName }}</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">{{ review.rating.toFixed(1) }} / 5</p>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ review.comment }}</p>
+          </article>
+        </div>
+      </section>
+    </article>
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { RouterLink, useRouter } from 'vue-router';
-import { formatCategoryLabel, formatCurrency } from '@/lib/format';
-import { useAuthStore } from '@/stores/auth';
+import { computed, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { fetchProductById } from '@/lib/dummyJsonApi';
+import { discountedPrice, formatCategoryLabel, formatCurrency, formatCurrencyLKR } from '@/lib/format';
 import { useCartStore } from '@/stores/cart';
+import type { Product } from '@/types/product';
 
-const authStore = useAuthStore();
-const cartStore = useCartStore();
+const route = useRoute();
 const router = useRouter();
+const cartStore = useCartStore();
 
-const checkoutMessage = ref<string | null>(null);
+const product = ref<Product | null>(null);
+const loading = ref(true);
+const errorMessage = ref<string | null>(null);
+const activeImage = ref('');
 
-const shipping = computed(() => {
-  if (cartStore.itemCount === 0) {
-    return 0;
+const imageChoices = computed(() => {
+  if (!product.value) {
+    return [];
   }
-  return cartStore.subtotal >= 120 ? 0 : 8.99;
+  return product.value.images.length > 0 ? product.value.images : [product.value.thumbnail];
 });
 
-const tax = computed(() => cartStore.subtotal * 0.08);
-const total = computed(() => cartStore.subtotal + shipping.value + tax.value);
-
-function handleCheckout(): void {
-  checkoutMessage.value = null;
-
-  if (!authStore.isAuthenticated) {
-    void router.push({ name: 'login', query: { redirect: '/cart' } });
-    return;
+const finalPrice = computed(() => {
+  if (!product.value) {
+    return 0;
   }
+  return discountedPrice(product.value.price, product.value.discountPercentage);
+});
 
-  if (cartStore.itemCount === 0) {
-    return;
+const formattedCategory = computed(() => {
+  if (!product.value) {
+    return '';
   }
+  return formatCategoryLabel(product.value.category);
+});
 
-  checkoutMessage.value = 'Order confirmed. This is a simulation, so no real payment happened.';
-  cartStore.clear();
+async function loadDetail(productId: number): Promise<void> {
+  loading.value = true;
+  errorMessage.value = null;
+
+  try {
+    const response = await fetchProductById(productId);
+    product.value = response;
+    activeImage.value = response.images[0] ?? response.thumbnail;
+  } catch (error: unknown) {
+    errorMessage.value =
+      error instanceof Error ? error.message : 'Could not retrieve product details right now.';
+  } finally {
+    loading.value = false;
+  }
 }
+
+function addToCart(): void {
+  if (!product.value) {
+    return;
+  }
+  cartStore.addItem(product.value);
+}
+
+function goBack(): void {
+  if (window.history.length > 1) {
+    router.back();
+    return;
+  }
+
+  void router.push('/');
+}
+
+watch(
+  () => route.params.id,
+  (param) => {
+    const id = Number(param);
+    if (Number.isNaN(id)) {
+      errorMessage.value = 'Invalid product id.';
+      loading.value = false;
+      return;
+    }
+    void loadDetail(id);
+  },
+  { immediate: true }
+);
 </script>
 
