@@ -69,15 +69,22 @@
 
           <div class="mt-5 grid gap-3 rounded-2xl bg-white/75 p-4 dark:bg-slate-900/70">
             <div class="flex items-end gap-3">
-              <p class="font-display text-3xl font-bold text-slate-900 dark:text-slate-100">
-                {{ formatCurrency(finalPrice) }}
-              </p>
-              <p
-                v-if="product.discountPercentage > 0"
-                class="pb-1 text-sm text-slate-500 line-through dark:text-slate-400"
-              >
-                {{ formatCurrency(product.price) }}
-              </p>
+              <div>
+                <p class="font-display text-3xl font-bold text-slate-900 dark:text-slate-100">
+                  {{ formatCurrency(finalPrice) }}
+                </p>
+                <p class="text-sm font-medium text-brand-600 dark:text-brand-400">
+                  {{ formatCurrencyLKR(finalPrice) }}
+                </p>
+              </div>
+              <div v-if="product.discountPercentage > 0">
+                <p class="pb-1 text-sm text-slate-500 line-through dark:text-slate-400">
+                  {{ formatCurrency(product.price) }}
+                </p>
+                <p class="text-xs text-slate-400 line-through dark:text-slate-500">
+                  {{ formatCurrencyLKR(product.price) }}
+                </p>
+              </div>
             </div>
             <p class="text-sm text-slate-600 dark:text-slate-300">
               Rated <span class="font-semibold">{{ product.rating.toFixed(1) }}</span> / 5 by users
@@ -138,7 +145,7 @@
 import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { fetchProductById } from '@/lib/dummyJsonApi';
-import { discountedPrice, formatCategoryLabel, formatCurrency } from '@/lib/format';
+import { discountedPrice, formatCategoryLabel, formatCurrency, formatCurrencyLKR } from '@/lib/format';
 import { useCartStore } from '@/stores/cart';
 import type { Product } from '@/types/product';
 
