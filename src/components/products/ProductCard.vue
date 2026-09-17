@@ -35,8 +35,12 @@
           <p class="font-display text-xl font-bold text-slate-900 dark:text-slate-100">
             {{ formatCurrency(finalPrice) }}
           </p>
+          <p class="text-xs font-medium text-brand-600 dark:text-brand-400">
+            {{ formatCurrencyLKR(finalPrice) }}
+          </p>
           <p v-if="product.discountPercentage > 0" class="text-xs text-slate-500 line-through">
             {{ formatCurrency(product.price) }}
+            <span class="ml-1">{{ formatCurrencyLKR(product.price) }}</span>
           </p>
         </div>
 
@@ -55,7 +59,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
-import { discountedPrice, formatCategoryLabel, formatCurrency } from '@/lib/format';
+import { discountedPrice, formatCategoryLabel, formatCurrency, formatCurrencyLKR } from '@/lib/format';
 import type { Product } from '@/types/product';
 
 const props = defineProps<{
