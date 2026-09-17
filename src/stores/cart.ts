@@ -16,12 +16,12 @@ export const useCartStore = defineStore('cart', () => {
     saveJson(CART_STORAGE_KEY, items.value);
   }
 
-  function addItem(product: Product): void {
+  function addItem(product: Product, quantity = 1): void {
     const existing = items.value.find((line) => line.productId === product.id);
     const maxStock = normalizeStock(product.stock);
 
     if (existing) {
-      existing.quantity = Math.min(existing.quantity + 1, existing.maxStock);
+      existing.quantity = Math.min(existing.quantity + quantity, existing.maxStock);
       persist();
       return;
     }
@@ -32,7 +32,7 @@ export const useCartStore = defineStore('cart', () => {
       category: product.category,
       thumbnail: product.thumbnail,
       price: product.price,
-      quantity: 1,
+      quantity: Math.min(quantity, maxStock),
       maxStock
     });
     persist();

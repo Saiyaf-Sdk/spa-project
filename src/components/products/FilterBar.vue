@@ -1,76 +1,155 @@
 <template>
-  <section class="mb-6 rounded-2xl glass-card p-5 soft-ring">
-    <div class="grid gap-4 md:grid-cols-[1.2fr_0.8fr_0.8fr_auto] md:items-end">
-      <!-- Search -->
-      <label class="flex flex-col gap-1.5 text-sm">
-        <span class="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-200">
-          <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+  <div class="mb-10 space-y-6">
+    <!-- Top Search & Sort Control Bar -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-neutral-200/80 pb-5 dark:border-neutral-800">
+      <!-- Search Input -->
+      <div class="relative w-full sm:max-w-md">
+        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-neutral-400">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          Search
         </span>
         <input
           :value="query"
-          class="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-200/50 focus:shadow-sm dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-brand-800/50"
-          placeholder="Search title, description, or brand..."
           type="text"
+          placeholder="Search by creation, brand or keyword..."
+          class="w-full rounded-full border border-neutral-200 bg-neutral-50/80 py-2.5 pl-10 pr-10 text-xs font-medium text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-neutral-900 focus:bg-white dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-gold-400"
           @input="onQueryInput"
         />
-      </label>
-
-      <!-- Category -->
-      <label class="flex flex-col gap-1.5 text-sm">
-        <span class="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-200">
-          <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h8m-8 6h16" />
-          </svg>
-          Category
-        </span>
-        <select
-          :value="category"
-          class="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition-all duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-200/50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-brand-800/50"
-          @change="onCategoryChange"
+        <button
+          v-if="query"
+          class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200"
+          type="button"
+          @click="emit('update:query', '')"
         >
-          <option value="all">All Categories</option>
-          <option v-for="item in categories" :key="item" :value="item">
-            {{ formatCategoryLabel(item) }}
-          </option>
-        </select>
-      </label>
-
-      <!-- Sort -->
-      <label class="flex flex-col gap-1.5 text-sm">
-        <span class="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-200">
-          <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
-          Sort
-        </span>
-        <select
-          :value="sortBy"
-          class="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition-all duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-200/50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-brand-800/50"
-          @change="onSortChange"
-        >
-          <option value="featured">Featured</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
-          <option value="rating-desc">Rating</option>
-        </select>
-      </label>
+        </button>
+      </div>
 
-      <!-- Result Count -->
-      <div
-        class="flex items-center gap-2 rounded-xl bg-brand-50 px-4 py-2.5 text-sm font-bold text-brand-800 dark:bg-brand-900/30 dark:text-brand-100"
-      >
-        <span class="font-display text-lg">{{ resultCount }}</span>
-        <span class="text-xs font-semibold uppercase tracking-wide">items</span>
+      <!-- Right: Sort & Count -->
+      <div class="flex items-center justify-between sm:justify-end gap-4 text-xs">
+        <span class="font-sans text-neutral-500 dark:text-neutral-400 whitespace-nowrap">
+          <strong class="font-semibold text-neutral-900 dark:text-white">{{ resultCount }}</strong> Creations
+        </span>
+
+        <div class="relative">
+          <select
+            :value="sortBy"
+            class="cursor-pointer appearance-none rounded-full border border-neutral-200 bg-white py-2.5 pl-4 pr-9 text-xs font-semibold text-neutral-800 outline-none transition hover:border-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200"
+            @change="onSortChange"
+          >
+            <option value="featured">Featured Curations</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="rating-desc">Highest Rated</option>
+          </select>
+          <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-400">
+            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+        </div>
       </div>
     </div>
-  </section>
+
+    <!-- Tier 1: Main Parent Department Tabs -->
+    <div class="space-y-2.5">
+      <div class="flex items-center justify-between">
+        <span class="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
+          Maison Departments
+        </span>
+      </div>
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+        <button
+          type="button"
+          :class="[
+            'flex-shrink-0 rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200',
+            activeDepartmentId === 'all'
+              ? 'bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 shadow-md'
+              : 'border border-neutral-200 bg-white text-neutral-800 hover:border-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:border-neutral-600'
+          ]"
+          @click="selectDepartment('all')"
+        >
+          All Departments
+        </button>
+
+        <button
+          v-for="dept in PARENT_DEPARTMENTS"
+          :key="dept.id"
+          type="button"
+          :class="[
+            'flex-shrink-0 rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200',
+            activeDepartmentId === dept.id
+              ? 'bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 shadow-md'
+              : 'border border-neutral-200 bg-white text-neutral-800 hover:border-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:border-neutral-600'
+          ]"
+          @click="selectDepartment(dept.id)"
+        >
+          {{ dept.label }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Tier 2: Beautiful, Highly Visible Sub-Category Bar -->
+    <div class="rounded-3xl border border-neutral-200/90 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/90">
+      <!-- Bar Header Label -->
+      <div class="mb-3 flex items-center justify-between border-b border-neutral-100 pb-2.5 dark:border-neutral-800/80">
+        <div class="flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-gold-500 animate-pulse" />
+          <span class="font-sans text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
+            Sub-Categories in {{ activeDepartmentLabel }}
+          </span>
+        </div>
+        <span class="text-xs font-medium text-neutral-400 dark:text-neutral-500">
+          Click to filter
+        </span>
+      </div>
+
+      <!-- Sub-Category Chips with High Contrast & Clear Fonts -->
+      <div class="flex items-center gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+        <!-- "All in Department" chip -->
+        <button
+          type="button"
+          :class="[
+            'flex-shrink-0 rounded-full px-4 py-2 text-xs sm:text-sm font-bold transition-all duration-200',
+            activeSubcategory === 'all'
+              ? 'bg-gold-500 text-neutral-950 shadow-md ring-2 ring-gold-400/50 scale-[1.02]'
+              : 'border border-neutral-200/90 bg-neutral-50 text-neutral-800 hover:border-neutral-400 hover:text-neutral-950 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:border-neutral-500 dark:hover:text-white'
+          ]"
+          @click="selectSubcategory('all')"
+        >
+          {{ activeDepartmentId === 'all' ? '✦ All Sub-Categories' : `✦ All ${activeDepartmentLabel}` }}
+        </button>
+
+        <!-- Specific Sub-Category chips -->
+        <button
+          v-for="sub in visibleSubcategories"
+          :key="sub.id"
+          type="button"
+          :class="[
+            'flex-shrink-0 rounded-full px-4 py-2 text-xs sm:text-sm font-bold transition-all duration-200',
+            activeSubcategory === sub.id
+              ? 'bg-gold-500 text-neutral-950 shadow-md ring-2 ring-gold-400/50 scale-[1.02]'
+              : 'border border-neutral-200/90 bg-neutral-50 text-neutral-800 hover:border-neutral-400 hover:text-neutral-950 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:border-neutral-500 dark:hover:text-white'
+          ]"
+          @click="selectSubcategory(sub.id)"
+        >
+          {{ sub.label }}
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { formatCategoryLabel } from '@/lib/format';
+import { computed, ref, watch } from 'vue';
+import {
+  PARENT_DEPARTMENTS,
+  getParentDepartmentForCategory,
+  type SubCategory
+} from '@/lib/categoryHierarchy';
 import type { SortOption } from '@/types/filter';
 
 interface FilterBarProps {
@@ -81,7 +160,7 @@ interface FilterBarProps {
   resultCount: number;
 }
 
-defineProps<FilterBarProps>();
+const props = defineProps<FilterBarProps>();
 
 const emit = defineEmits<{
   (event: 'update:query', value: string): void;
@@ -89,14 +168,84 @@ const emit = defineEmits<{
   (event: 'update:sortBy', value: SortOption): void;
 }>();
 
+const activeDepartmentId = ref('all');
+const activeSubcategory = ref('all');
+
+// Synchronize external category prop with internal department/subcategory state
+watch(
+  () => props.category,
+  (newCat) => {
+    if (newCat === 'all' || newCat.startsWith('dept:')) {
+      if (newCat.startsWith('dept:')) {
+        activeDepartmentId.value = newCat.replace('dept:', '');
+      } else {
+        activeDepartmentId.value = 'all';
+      }
+      activeSubcategory.value = 'all';
+      return;
+    }
+
+    const parent = getParentDepartmentForCategory(newCat);
+    if (parent) {
+      activeDepartmentId.value = parent.id;
+    }
+    activeSubcategory.value = newCat;
+  },
+  { immediate: true }
+);
+
+const activeDepartmentLabel = computed(() => {
+  const dept = PARENT_DEPARTMENTS.find((d) => d.id === activeDepartmentId.value);
+  return dept ? dept.label : 'All Departments';
+});
+
+// Calculate visible subcategories based on active department
+const visibleSubcategories = computed<SubCategory[]>(() => {
+  if (activeDepartmentId.value === 'all') {
+    // Show top luxury subcategories across all departments
+    return [
+      { id: 'fragrances', label: 'Parfums' },
+      { id: 'mens-watches', label: "Men's Watches" },
+      { id: 'womens-watches', label: "Women's Watches" },
+      { id: 'beauty', label: 'Cosmetics' },
+      { id: 'skin-care', label: 'Skincare' },
+      { id: 'womens-bags', label: 'Designer Bags' },
+      { id: 'sunglasses', label: 'Eyewear' },
+      { id: 'womens-jewellery', label: 'Fine Jewellery' }
+    ];
+  }
+
+  const dept = PARENT_DEPARTMENTS.find((d) => d.id === activeDepartmentId.value);
+  return dept ? dept.subcategories : [];
+});
+
+function selectDepartment(deptId: string): void {
+  activeDepartmentId.value = deptId;
+  activeSubcategory.value = 'all';
+
+  if (deptId === 'all') {
+    emit('update:category', 'all');
+  } else {
+    emit('update:category', `dept:${deptId}`);
+  }
+}
+
+function selectSubcategory(subId: string): void {
+  activeSubcategory.value = subId;
+  if (subId === 'all') {
+    if (activeDepartmentId.value === 'all') {
+      emit('update:category', 'all');
+    } else {
+      emit('update:category', `dept:${activeDepartmentId.value}`);
+    }
+  } else {
+    emit('update:category', subId);
+  }
+}
+
 function onQueryInput(event: Event): void {
   const target = event.target as HTMLInputElement | null;
   emit('update:query', target?.value ?? '');
-}
-
-function onCategoryChange(event: Event): void {
-  const target = event.target as HTMLSelectElement | null;
-  emit('update:category', target?.value ?? 'all');
 }
 
 function onSortChange(event: Event): void {

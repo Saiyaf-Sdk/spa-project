@@ -5,30 +5,65 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        display: ['"Sora"', 'sans-serif'],
+        brand: ['"Cinzel"', 'serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
         body: ['"Plus Jakarta Sans"', 'sans-serif']
       },
       colors: {
+        gold: {
+          50: '#fdfbf7',
+          100: '#f9f4e8',
+          200: '#f0e5c8',
+          300: '#e4d1a0',
+          400: '#d5bc78',
+          500: '#c5a059', // Core Maison Champagne Gold
+          600: '#b0883e',
+          700: '#8c6929',
+          800: '#684c1c',
+          900: '#473211'
+        },
+        caviar: {
+          50: '#2c2c34',
+          100: '#222228',
+          200: '#1a1a1f',
+          300: '#141417',
+          400: '#0e0e11',
+          500: '#09090b',
+          900: '#050507'
+        },
+        alabaster: {
+          50: '#ffffff',
+          100: '#faf8f5',
+          200: '#f4efe6',
+          300: '#ece3d2',
+          400: '#dfd4be',
+          500: '#cfc0a5'
+        },
         brand: {
-          50: '#ebf8f7',
-          100: '#d8f0ee',
-          200: '#b5e0dc',
-          300: '#83c8c3',
-          400: '#51aaa9',
-          500: '#2a8f92',
-          600: '#1f7376',
-          700: '#1c5c61',
-          800: '#1a4a4f',
-          900: '#173f43'
+          50: '#fdfbf7',
+          100: '#f9f4e8',
+          200: '#f0e5c8',
+          300: '#e4d1a0',
+          400: '#d5bc78',
+          500: '#c5a059',
+          600: '#b0883e',
+          700: '#8c6929',
+          800: '#684c1c',
+          900: '#473211'
         },
         ember: {
-          500: '#d96c3a',
-          600: '#be592d',
-          700: '#984625'
+          500: '#c5a059',
+          600: '#b0883e',
+          700: '#8c6929'
         }
       },
       boxShadow: {
-        float: '0 18px 45px -20px rgba(15, 45, 50, 0.42)'
+        float: '0 20px 45px -15px rgba(0, 0, 0, 0.08), 0 0 20px rgba(197, 160, 89, 0.06)',
+        luxury: '0 20px 45px -15px rgba(0, 0, 0, 0.1), 0 0 20px rgba(197, 160, 89, 0.1)',
+        'luxury-gold': '0 12px 35px -10px rgba(197, 160, 89, 0.4)',
+        'luxury-dark': '0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 25px rgba(197, 160, 89, 0.12)'
       }
     }
   },

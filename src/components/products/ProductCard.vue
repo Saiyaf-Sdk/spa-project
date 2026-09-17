@@ -1,91 +1,121 @@
 <template>
   <article
-    class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white/85 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-500/10 dark:border-slate-700 dark:bg-slate-900/75 dark:hover:border-brand-600 dark:hover:shadow-brand-500/5"
+    class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-neutral-200/70 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-lg dark:border-neutral-800/80 dark:bg-neutral-900 dark:hover:border-neutral-700"
   >
-    <!-- Image -->
-    <RouterLink :to="`/product/${product.id}`" class="relative block overflow-hidden">
-      <img
-        :alt="product.title"
-        :src="product.thumbnail"
-        class="h-52 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-        loading="lazy"
-      />
-      <!-- Gradient overlay on hover -->
-      <div
-        class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-      />
-      <!-- Category badge -->
+    <!-- Product Image Container -->
+    <div class="relative overflow-hidden bg-neutral-50 p-4 dark:bg-neutral-950/60">
+      <RouterLink :to="`/product/${product.id}`" class="block">
+        <div class="aspect-square w-full overflow-hidden rounded-xl">
+          <img
+            :alt="product.title"
+            :src="product.thumbnail"
+            class="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+            loading="lazy"
+          />
+        </div>
+      </RouterLink>
+
+      <!-- Department Tag (Top Left) -->
       <span
-        class="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-slate-700 shadow-sm backdrop-blur-sm dark:bg-slate-900/85 dark:text-slate-200"
+        class="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-neutral-700 shadow-sm backdrop-blur-md dark:bg-neutral-900/90 dark:text-neutral-300"
       >
         {{ formatCategoryLabel(product.category) }}
       </span>
-      <!-- Discount badge -->
+
+      <!-- Discount Tag (Top Right Beside Heart) -->
       <span
         v-if="product.discountPercentage > 0"
-        class="shimmer-badge absolute right-3 top-3 rounded-full bg-ember-500 px-2.5 py-1 text-[11px] font-bold text-white shadow-sm"
+        class="absolute right-12 top-3 rounded-full bg-neutral-900 px-2 py-0.5 text-[9px] font-bold text-white shadow-sm dark:bg-gold-500 dark:text-neutral-950"
       >
         -{{ Math.round(product.discountPercentage) }}%
       </span>
-    </RouterLink>
 
-    <!-- Content -->
-    <div class="flex flex-1 flex-col p-4">
-      <!-- Brand & Rating -->
-      <div class="mb-2 flex items-center justify-between gap-3 text-xs">
-        <span class="font-medium text-slate-500 dark:text-slate-400">
-          {{ product.brand ?? 'Generic Brand' }}
-        </span>
-        <span
-          class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400"
+      <!-- Wishlist Heart Button -->
+      <button
+        :class="[
+          'absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-neutral-400 shadow-sm backdrop-blur-md transition-all duration-200 hover:scale-110 dark:bg-neutral-800/90',
+          isFavorite
+            ? '!text-rose-500 !bg-rose-50 dark:!bg-rose-950/40'
+            : 'hover:text-rose-500'
+        ]"
+        type="button"
+        title="Add to Wishlist"
+        @click.stop="toggleWishlist"
+      >
+        <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+      </button>
+
+      <!-- Quick View Hover Reveal -->
+      <div class="absolute inset-x-4 bottom-3 translate-y-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+        <button
+          class="w-full rounded-xl bg-neutral-900/90 py-2.5 text-center text-xs font-semibold tracking-wider text-white backdrop-blur-md transition hover:bg-neutral-950 dark:bg-white/90 dark:text-neutral-950 dark:hover:bg-white"
+          type="button"
+          @click.stop="emit('quick-view', product)"
         >
-          <svg class="h-3 w-3 fill-amber-500" viewBox="0 0 20 20">
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-          </svg>
-          {{ product.rating.toFixed(1) }}
+          Quick View
+        </button>
+      </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="flex flex-1 flex-col p-4 sm:p-5">
+      <!-- Maison Brand & Rating -->
+      <div class="mb-1.5 flex items-center justify-between text-xs">
+        <span class="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
+          {{ product.brand ?? 'Maison Lumen' }}
+        </span>
+        <span class="flex items-center gap-1 text-[11px] font-medium text-amber-500">
+          ★ {{ product.rating.toFixed(1) }}
         </span>
       </div>
 
       <!-- Title -->
       <RouterLink
         :to="`/product/${product.id}`"
-        class="line-clamp-2 font-display text-lg font-semibold leading-snug transition-colors hover:text-brand-700 dark:hover:text-brand-300"
+        class="line-clamp-1 font-serif text-base font-normal tracking-tight text-neutral-900 transition-colors hover:text-gold-600 dark:text-neutral-100 dark:hover:text-gold-400 sm:text-lg"
       >
         {{ product.title }}
       </RouterLink>
 
-      <!-- Description -->
-      <p class="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+      <!-- Description Snippet -->
+      <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
         {{ product.description }}
       </p>
 
       <!-- Spacer -->
-      <div class="flex-1" />
+      <div class="flex-1 min-h-[14px]" />
 
-      <!-- Price & CTA -->
-      <div class="mt-4 flex items-end justify-between gap-2 border-t border-slate-100 pt-4 dark:border-slate-800">
+      <!-- Price & Add Button -->
+      <div class="mt-4 flex items-center justify-between border-t border-neutral-100 pt-3.5 dark:border-neutral-800">
         <div>
-          <p class="font-display text-xl font-bold text-slate-900 dark:text-slate-100">
-            {{ formatCurrency(finalPrice) }}
-          </p>
-          <p class="text-xs font-semibold text-brand-600 dark:text-brand-400">
+          <div class="flex items-baseline gap-1.5">
+            <span class="font-serif text-lg font-bold text-neutral-900 dark:text-white sm:text-xl">
+              {{ formatCurrency(finalPrice) }}
+            </span>
+            <span
+              v-if="product.discountPercentage > 0"
+              class="text-xs text-neutral-400 line-through dark:text-neutral-500"
+            >
+              {{ formatCurrency(product.price) }}
+            </span>
+          </div>
+          <span class="block text-[10px] font-semibold text-gold-600 dark:text-gold-400">
             {{ formatCurrencyLKR(finalPrice) }}
-          </p>
-          <p v-if="product.discountPercentage > 0" class="mt-0.5 text-[11px] text-slate-400 line-through">
-            {{ formatCurrency(product.price) }}
-            <span class="ml-0.5">{{ formatCurrencyLKR(product.price) }}</span>
-          </p>
+          </span>
         </div>
 
+        <!-- Add Button -->
         <button
-          class="inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-3.5 py-2 text-xs font-bold text-white shadow-md shadow-brand-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-lg hover:shadow-brand-600/30 active:translate-y-0"
+          class="inline-flex items-center gap-1 rounded-full border border-neutral-900 bg-neutral-900 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-gold-500 hover:border-gold-500 hover:text-neutral-950 dark:border-white dark:bg-white dark:text-neutral-950 dark:hover:bg-gold-400 dark:hover:border-gold-400 active:scale-95"
           type="button"
           @click="emit('add-to-cart', product)"
         >
-          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
           </svg>
-          Add
+          <span>Add</span>
         </button>
       </div>
     </div>
@@ -96,6 +126,7 @@
 import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import { discountedPrice, formatCategoryLabel, formatCurrency, formatCurrencyLKR } from '@/lib/format';
+import { useWishlistStore } from '@/stores/wishlist';
 import type { Product } from '@/types/product';
 
 const props = defineProps<{
@@ -104,7 +135,17 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: 'add-to-cart', value: Product): void;
+  (event: 'quick-view', value: Product): void;
+  (event: 'wishlist-toggled', value: Product, isFav: boolean): void;
 }>();
 
+const wishlistStore = useWishlistStore();
+
 const finalPrice = computed(() => discountedPrice(props.product.price, props.product.discountPercentage));
+const isFavorite = computed(() => wishlistStore.isInWishlist(props.product.id));
+
+function toggleWishlist(): void {
+  const added = wishlistStore.toggleWishlist(props.product);
+  emit('wishlist-toggled', props.product, added);
+}
 </script>

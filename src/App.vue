@@ -1,7 +1,9 @@
 <template>
-  <div class="relative flex min-h-screen flex-col overflow-x-hidden">
+  <div class="relative flex min-h-screen flex-col overflow-x-hidden transition-colors">
+    <!-- Ambient Gold Dust Atmosphere -->
     <div
-      class="pointer-events-none absolute inset-0 -z-10 opacity-70 mesh-overlay"
+      class="pointer-events-none fixed inset-0 -z-10 opacity-30 dark:opacity-40"
+      style="background-image: radial-gradient(rgba(197, 160, 89, 0.15) 1px, transparent 1px); background-size: 32px 32px;"
       aria-hidden="true"
     />
     <AppHeader />
@@ -17,4 +19,3 @@ import { RouterView } from 'vue-router';
 import AppFooter from '@/components/layout/AppFooter.vue';
 import AppHeader from '@/components/layout/AppHeader.vue';
 </script>
-

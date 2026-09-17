@@ -46,13 +46,16 @@ function parseCategory(item: CategoryEndpointItem): string | null {
   return null;
 }
 
-export async function fetchProducts(limit = 100): Promise<Product[]> {
+import { enrichProductWithLuxuryData } from '@/lib/luxuryImageOverrides';
+
+export async function fetchProducts(limit = 0): Promise<Product[]> {
   const payload = await request<ProductListResponse>(`/products?limit=${limit}`);
-  return payload.products;
+  return payload.products.map(enrichProductWithLuxuryData);
 }
 
 export async function fetchProductById(productId: number): Promise<Product> {
-  return request<Product>(`/products/${productId}`);
+  const rawProduct = await request<Product>(`/products/${productId}`);
+  return enrichProductWithLuxuryData(rawProduct);
 }
 
 export async function fetchCategories(): Promise<string[]> {

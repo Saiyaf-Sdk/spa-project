@@ -13,6 +13,12 @@ const routes: RouteRecordRaw[] = [
     component: HomeView
   },
   {
+    path: '/catalog',
+    name: 'catalog',
+    component: () => import('@/views/CatalogView.vue'),
+    alias: '/shop'
+  },
+  {
     path: '/login',
     name: 'login',
     component: LoginView
@@ -21,6 +27,11 @@ const routes: RouteRecordRaw[] = [
     path: '/cart',
     name: 'cart',
     component: CartView
+  },
+  {
+    path: '/wishlist',
+    name: 'wishlist',
+    component: () => import('@/views/WishlistView.vue')
   },
   {
     path: '/product/:id',
@@ -38,8 +49,18 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior() {
-    return { top: 0 };
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    }
+    if (to.hash) {
+      return { el: to.hash, behavior: 'smooth' };
+    }
+    // Do not jump to top when only query parameters change (e.g. clicking categories or sub-categories)
+    if (to.path === from.path) {
+      return false;
+    }
+    return { top: 0, behavior: 'smooth' };
   }
 });
 
