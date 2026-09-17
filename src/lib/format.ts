@@ -1,9 +1,21 @@
+// Approximate USD → LKR exchange rate (update as needed)
+export const USD_TO_LKR = 298.50;
+
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     maximumFractionDigits: 2
   }).format(value);
+}
+
+export function formatCurrencyLKR(usdValue: number): string {
+  const lkrValue = usdValue * USD_TO_LKR;
+  return new Intl.NumberFormat('en-LK', {
+    style: 'currency',
+    currency: 'LKR',
+    maximumFractionDigits: 2
+  }).format(lkrValue);
 }
 
 export function formatCategoryLabel(category: string): string {
