@@ -1,0 +1,132 @@
+[
+  {
+    "id": 6,
+    "title": "CK One",
+    "family": "Fresh",
+    "concentration": "Eau de Toilette",
+    "sizeMl": 100,
+    "price": 84,
+    "notes": [
+      "Bergamot",
+      "Green tea",
+      "Musk"
+    ],
+    "description": "Bergamot gives the opening a little bite. A green tea note runs through the citrus, then settles into a quiet, clean musk.",
+    "sourceUrl": "https://www.calvinklein.us/en/ck-one/10740.html",
+    "brand": "Calvin Klein",
+    "category": "fragrances",
+    "stock": 29,
+    "sku": "FRA-CAL-CAL-006",
+    "rating": 0,
+    "discountPercentage": 0,
+    "images": [
+      "/product-images/33a06ed35111202988.webp",
+      "/product-images/9c6c1f41fff5370f4f.webp"
+    ],
+    "thumbnail": "/product-images/ab0abf2583ea0c15cf.webp"
+  },
+  {
+    "id": 7,
+    "title": "Coco Noir",
+    "family": "Amber",
+    "concentration": "Eau de Parfum",
+    "sizeMl": 100,
+    "price": 185,
+    "notes": [
+      "Bergamot",
+      "May rose",
+      "Patchouli"
+    ],
+    "description": "Bergamot lifts May rose out of a deep patchouli base. A touch of tonka softens the edges as the brighter notes fade.",
+    "sourceUrl": "https://www.chanel.com/us/fragrance/p/113660/coco-noir-eau-de-parfum-spray/",
+    "brand": "Chanel",
+    "category": "fragrances",
+    "stock": 58,
+    "sku": "FRA-CHA-CHA-007",
+    "rating": 0,
+    "discountPercentage": 0,
+    "images": [
+      "/product-images/0cb6e50f86454c4daf.webp",
+      "/product-images/7fa54fb146db1e5248.webp"
+    ],
+    "thumbnail": "/product-images/d16552eb409dcbde97.webp"
+  },
+  {
+    "id": 8,
+    "title": "J’adore",
+    "family": "Floral",
+    "concentration": "Eau de Parfum",
+    "sizeMl": 100,
+    "price": 178,
+    "notes": [
+      "Ylang-ylang",
+      "Damascus rose",
+      "Jasmine"
+    ],
+    "description": "Ylang-ylang lends a ripe, almost fruity warmth to Damascus rose. Two varieties of jasmine fill out the bouquet, giving it a soft, rounded finish.",
+    "sourceUrl": "https://www.dior.com/en_us/beauty/products/j%E2%80%99adore-eau-de-parfum-C099800245.html",
+    "brand": "Dior",
+    "category": "fragrances",
+    "stock": 98,
+    "sku": "FRA-DIO-DIO-008",
+    "rating": 0,
+    "discountPercentage": 0,
+    "images": [
+      "/product-images/7523c50c1bd3a02711.webp",
+      "/product-images/d7d767c5c46f98014a.webp"
+    ],
+    "thumbnail": "/product-images/d9711b5e9d675be3ee.webp"
+  },
+  {
+    "id": 9,
+    "title": "Dolce Shine",
+    "family": "Fruity floral",
+    "concentration": "Eau de Parfum",
+    "sizeMl": 50,
+    "price": 130,
+    "notes": [
+      "Mango",
+      "Orange blossom",
+      "Sandalwood"
+    ],
+    "description": "Juicy mango leads into orange blossom and tiaré. Sandalwood gives the fruit and flowers a smooth, creamy finish.",
+    "sourceUrl": "https://www.dolcegabbana.com/en-us/beauty/perfumes-for-her/dolce/dolce-shine-edp-50ml---158057971180035.html",
+    "brand": "Dolce & Gabbana",
+    "category": "fragrances",
+    "stock": 4,
+    "sku": "FRA-DOL-DOL-009",
+    "rating": 0,
+    "discountPercentage": 0,
+    "images": [
+      "/product-images/ab914688f0d780d8f1.webp",
+      "/product-images/d89334a3a85121bee2.webp"
+    ],
+    "thumbnail": "/product-images/908ea37c1f5ce975e3.webp"
+  },
+  {
+    "id": 10,
+    "title": "Gucci Bloom",
+    "family": "Floral",
+    "concentration": "Eau de Parfum",
+    "sizeMl": 100,
+    "price": 168,
+    "notes": [
+      "Tuberose",
+      "Jasmine",
+      "Rangoon creeper"
+    ],
+    "description": "Tuberose and jasmine evoke a garden of white flowers. Rangoon creeper adds a powdery note that lingers beneath the greener jasmine buds.",
+    "sourceUrl": "https://www.gucci.com/us/en/pr/beauty/fragrances/fragrances-for-women/gucci-bloom-100ml-eau-de-parfum-p-488830999990099",
+    "brand": "Gucci",
+    "category": "fragrances",
+    "stock": 91,
+    "sku": "FRA-GUC-GUC-010",
+    "rating": 0,
+    "discountPercentage": 0,
+    "images": [
+      "/product-images/8838adf39966b5568e.webp",
+      "/product-images/07195f50807e95514d.webp"
+    ],
+    "thumbnail": "/product-images/6cde456a55a2169083.webp"
+  }
+]

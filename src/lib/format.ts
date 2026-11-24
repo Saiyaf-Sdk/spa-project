@@ -1,3 +1,5 @@
+import { unitCents } from '../../shared/pricing';
+
 // Approximate USD → LKR exchange rate (update as needed)
 export const USD_TO_LKR = 298.50;
 
@@ -26,7 +28,5 @@ export function formatCategoryLabel(category: string): string {
 }
 
 export function discountedPrice(price: number, discountPercentage: number): number {
-  const discount = (price * discountPercentage) / 100;
-  return Math.max(price - discount, 0);
+  return unitCents(price, discountPercentage) / 100;
 }
-

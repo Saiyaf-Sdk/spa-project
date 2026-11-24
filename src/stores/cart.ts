@@ -1,95 +1,24 @@
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { defineStore } from 'pinia';
-import { CART_STORAGE_KEY } from '@/lib/constants';
-import { loadJson, saveJson } from '@/lib/storage';
-import type { CartLine } from '@/types/cart';
+import { session, updateSession } from '@/lib/session';
 import type { Product } from '@/types/product';
 
-function normalizeStock(stock: number): number {
-  return stock > 0 ? stock : 1;
-}
-
 export const useCartStore = defineStore('cart', () => {
-  const items = ref<CartLine[]>(loadJson<CartLine[]>(CART_STORAGE_KEY) ?? []);
-
-  function persist(): void {
-    saveJson(CART_STORAGE_KEY, items.value);
-  }
-
-  function addItem(product: Product, quantity = 1): void {
-    const existing = items.value.find((line) => line.productId === product.id);
-    const maxStock = normalizeStock(product.stock);
-
-    if (existing) {
-      existing.quantity = Math.min(existing.quantity + quantity, existing.maxStock);
-      persist();
-      return;
-    }
-
-    items.value.push({
-      productId: product.id,
-      title: product.title,
-      category: product.category,
-      thumbnail: product.thumbnail,
-      price: product.price,
-      quantity: Math.min(quantity, maxStock),
-      maxStock
-    });
-    persist();
-  }
-
-  function removeItem(productId: number): void {
-    items.value = items.value.filter((line) => line.productId !== productId);
-    persist();
-  }
-
-  function increase(productId: number): void {
-    const line = items.value.find((entry) => entry.productId === productId);
-    if (!line) {
-      return;
-    }
-
-    line.quantity = Math.min(line.quantity + 1, line.maxStock);
-    persist();
-  }
-
-  function decrease(productId: number): void {
-    const line = items.value.find((entry) => entry.productId === productId);
-    if (!line) {
-      return;
-    }
-
-    if (line.quantity <= 1) {
-      removeItem(productId);
-      return;
-    }
-
-    line.quantity -= 1;
-    persist();
-  }
-
-  function clear(): void {
-    items.value = [];
-    persist();
-  }
-
-  const itemCount = computed(() =>
-    items.value.reduce((total, line) => total + Math.max(line.quantity, 0), 0)
-  );
-
-  const subtotal = computed(() =>
-    items.value.reduce((total, line) => total + line.price * line.quantity, 0)
-  );
-
+  const items = computed(() => session.value.cart);
+  const change = (body: unknown) => updateSession('/cart', body);
   return {
     items,
-    itemCount,
-    subtotal,
-    addItem,
-    removeItem,
-    increase,
-    decrease,
-    clear
+    itemCount: computed(() => items.value.reduce((sum, line) => sum + line.quantity, 0)),
+    subtotal: computed(
+      () =>
+        items.value.reduce((sum, line) => sum + Math.round(line.price * 100) * line.quantity, 0) /
+        100
+    ),
+    addItem: (product: Product, quantity = 1) => change({ productId: product.id, delta: quantity }),
+    addSaved: () => change({ allSaved: true }),
+    increase: (productId: number) => change({ productId, delta: 1 }),
+    decrease: (productId: number) => change({ productId, delta: -1 }),
+    removeItem: (productId: number) => change({ productId, remove: true }),
+    clear: () => change({ clear: true })
   };
 });
-

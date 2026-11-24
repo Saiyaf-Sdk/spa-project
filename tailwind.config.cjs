@@ -5,11 +5,11 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        brand: ['"Cinzel"', 'serif'],
-        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-        body: ['"Plus Jakarta Sans"', 'sans-serif']
+        brand: ['"Cinzel Variable"', 'serif'],
+        serif: ['"Cormorant Garamond Variable"', 'Georgia', 'serif'],
+        display: ['"Cormorant Garamond Variable"', 'Georgia', 'serif'],
+        sans: ['"Plus Jakarta Sans Variable"', 'sans-serif'],
+        body: ['"Plus Jakarta Sans Variable"', 'sans-serif']
       },
       colors: {
         gold: {

@@ -17,6 +17,11 @@ export interface Product {
   title: string;
   description: string;
   category: string;
+  family: string;
+  concentration: string;
+  sizeMl: number;
+  notes: string[];
+  sourceUrl: string;
   price: number;
   discountPercentage: number;
   rating: number;

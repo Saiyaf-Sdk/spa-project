@@ -19,6 +19,11 @@ const routes: RouteRecordRaw[] = [
     alias: '/shop'
   },
   {
+    path: '/scent-guide',
+    name: 'scent-guide',
+    component: () => import('@/views/ScentGuideView.vue')
+  },
+  {
     path: '/login',
     name: 'login',
     component: LoginView
@@ -27,6 +32,11 @@ const routes: RouteRecordRaw[] = [
     path: '/cart',
     name: 'cart',
     component: CartView
+  },
+  {
+    path: '/orders',
+    name: 'orders',
+    component: () => import('@/views/OrdersView.vue')
   },
   {
     path: '/wishlist',
@@ -64,4 +74,18 @@ const router = createRouter({
   }
 });
 
+const pageTitles: Record<string, string> = {
+  home: 'Perfume boutique',
+  catalog: 'The collection',
+  login: 'Your account',
+  cart: 'Shopping bag',
+  wishlist: 'Wishlist',
+  orders: 'My orders',
+  'scent-guide': 'Scent guide',
+  'product-detail': 'Perfume',
+  'not-found': 'Page not found'
+};
+router.afterEach((to) => {
+  document.title = (pageTitles[String(to.name)] || 'Perfumes') + ' | Nebo Parfumerie';
+});
 export default router;
